@@ -41,36 +41,5 @@ namespace handheld_beta_api.Services
                 throw new Exception($"Error al ejecutar la consulta: {ex.Message}", ex);
             }
         }
-
-        /*public async Task<List<Usuario>> GetUsuariosAsync(int nit)
-        {
-            try
-            {
-                var devnit = new SqlParameter("@nit", SqlDbType.Int) { Value = nit };
-
-
-                var usuarios = await _usuariocontext.Usuario
-                    .FromSqlRaw("SELECT nit, nombres FROM V_nom_personal_Activo_con_maquila where nit = @nit", devnit)
-                    .ToListAsync();
-
-                // Si no se encontraron usuarios, lanzar una excepción
-                if (usuarios == null || usuarios.Count == 0)
-                {
-                    throw new Exception("No se encontraron usuarios.");
-                }
-
-                return usuarios;
-            }
-            catch (SqlException sqlEx)
-            {
-                // Manejo específico de excepciones de SQL
-                throw new Exception($"Error en la consulta SQL: {sqlEx.Message}", sqlEx);
-            }
-            catch (Exception ex)
-            {
-                // Manejo general de excepciones
-                throw new Exception($"Error al ejecutar la consulta: {ex.Message}", ex);
-            }
-        }*/
     }
 }
