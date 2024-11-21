@@ -48,27 +48,5 @@ namespace handheld_beta_api.Controllers
                 return StatusCode(500, $"Error interno: {ex.Message}");
             }
         }
-
-        /*public async Task<ActionResult<string>> VerificarUsuario(int nit)
-        {
-            try
-            {
-                var usuarios = await _usuarioService.GetUsuariosAsync(nit);
-
-                // Buscar el usuario por NIT
-                var usuario = usuarios.FirstOrDefault();
-
-                if (usuario == null)
-                {
-                    return NotFound("Usuario no encontrado");
-                }
-
-                return Ok(new { nombres = usuario.nombres });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error interno: {ex.Message}");
-            }
-        }*/
     }
 }

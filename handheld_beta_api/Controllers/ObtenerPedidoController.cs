@@ -3,6 +3,7 @@ using handheld_beta_api.Services;
 using handheld_beta_api.Model;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace handheld_beta_api.Controllers
 {
@@ -24,8 +25,13 @@ namespace handheld_beta_api.Controllers
             try
             {
                 var pedidos = await _service.GetObtenerPedidosAsync(devolver);
-                return Ok(pedidos);
 
+                if (pedidos != null) { 
+
+                    return Ok(pedidos.ToList());
+                    
+                }
+                return Ok(pedidos);
             }
             catch (Exception ex)
             {

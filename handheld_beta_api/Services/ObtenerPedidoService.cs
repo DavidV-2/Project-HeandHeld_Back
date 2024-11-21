@@ -25,7 +25,7 @@ namespace handheld_beta_api.Services
                 var devolverParam = new SqlParameter("@devolver", SqlDbType.Char) { Value = devolver};
 
                 return await _context.ObtenerPedido
-                    .FromSql($"EXEC DV_ObtenerPedidos  WHERE @devolver = {devolverParam} ")
+                    .FromSqlRaw("EXEC DV_ObtenerPedidos @devolver", devolverParam)
                     .ToListAsync();
             }
             catch (Exception ex)
