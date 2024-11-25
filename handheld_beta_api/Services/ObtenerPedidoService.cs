@@ -1,10 +1,7 @@
 ﻿using handheld_beta_api.Model;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
 
 namespace handheld_beta_api.Services
 {
@@ -19,7 +16,6 @@ namespace handheld_beta_api.Services
 
         public async Task<List<ObtenerPedido>> GetObtenerPedidosAsync(string devolver)
         {
-            // Ejecutar el procedimiento almacenado
             try
             {
                 var devolverParam = new SqlParameter("@devolver", SqlDbType.Char) { Value = devolver};

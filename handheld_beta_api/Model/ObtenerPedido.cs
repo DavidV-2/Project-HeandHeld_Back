@@ -1,7 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System.ComponentModel.DataAnnotations;
-
-namespace handheld_beta_api.Model
+﻿namespace handheld_beta_api.Model
 {
     public class ObtenerPedido
     {
