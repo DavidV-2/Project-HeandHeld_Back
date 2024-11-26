@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using handheld_beta_api.Services;
 using handheld_beta_api.Model;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Text.Json;
 
 namespace handheld_beta_api.Controllers
 {
@@ -18,26 +15,31 @@ namespace handheld_beta_api.Controllers
             _service = service;
         }
 
-        // GET /ObtenerPedido
         [HttpPost]
-        public async Task<ActionResult<List<ObtenerPedido>>> GetObtenerPedidos([FromQuery] string devolver)
+        public async Task<ActionResult<List<ObtenerPedido>>> GetObtenerPedidos([FromBody] DevolverRequest body)
         {
             try
             {
+                // Obtener el parámetro 'devolver' del cuerpo
+                string devolver = body.Devolver;
+
                 var pedidos = await _service.GetObtenerPedidosAsync(devolver);
 
-                if (pedidos != null) { 
-
-                    return Ok(pedidos.ToList());
-                    
+                if (pedidos == null || pedidos.Count == 0)
+                {
+                    return NotFound("Pedidos no encontrados.");
                 }
+
                 return Ok(pedidos);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-
             }
+        }
+        public class DevolverRequest
+        {
+            public string Devolver { get; set; }
         }
     }
 }
