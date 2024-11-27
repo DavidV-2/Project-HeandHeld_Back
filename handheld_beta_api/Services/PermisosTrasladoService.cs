@@ -15,22 +15,23 @@ namespace handheld_beta_api.Services
             _PTContext = context;
         }
 
-        public async Task<PermisosTraslado> GetPermisosTrasladosAsync(decimal nit)
+        public async Task<PermisosTraslado> GetPermisosTrasladosAsync(int nit)
         {
             try
             {
-                var devpermiso = new SqlParameter("@nit", SqlDbType.Decimal) { Value = nit };
+                var devnit = new SqlParameter("@nit", SqlDbType.VarChar) { Value = nit };
 
                 var permiso = await _PTContext.PermisosTraslado
-                    .FromSqlRaw("EXEC DV_Sp_permisos_traslado @nit ", devpermiso)
-                    .FirstOrDefaultAsync();
+                    .FromSqlRaw("EXEC DVp_Sp_permisos_traslado @nit ", devnit)
+                    .ToListAsync();
 
-                if (permiso == null)
+                // Verifica si la lista de permisos está vacía
+                if (permiso == null || !permiso.Any())
                 {
-                    throw new KeyNotFoundException("No se encontraron Permisos para traslado Traslados.");
+                    return null;
                 }
 
-                return permiso;
+                return permiso.First();
             }
             catch (SqlException sqlEx)
             {

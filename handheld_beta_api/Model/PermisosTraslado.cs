@@ -2,7 +2,7 @@
 {
     public class PermisosTraslado
     {
-        public decimal nit {  get; set; }
+        public int nit {  get; set; }
         public string permiso { get; set; }
         public string modulo { get; set; }
     }

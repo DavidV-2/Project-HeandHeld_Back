@@ -27,12 +27,8 @@ namespace handheld_beta_api.Controllers
                     return BadRequest("El cuerpo de la solicitud debe contener 'nitEntrega' y 'nitRecibe'.");
                 }
 
-                // Convertir los valores de NIT
-                if (!decimal.TryParse(nitEntregaElement.ToString(), out decimal nitEntrega) || nitEntrega <= 0 ||
-                    !decimal.TryParse(nitRecibeElement.ToString(), out decimal nitRecibe) || nitRecibe <= 0)
-                {
-                    return BadRequest("Ambos NITs deben ser valores decimales mayores a 0.");
-                }
+                int nitEntrega = nitEntregaElement.GetInt32();
+                int nitRecibe = nitRecibeElement.GetInt32();
 
                 // Verificar permisos para ambos NITs
                 var permisoEntrega = await _PTService.GetPermisosTrasladosAsync(nitEntrega);
@@ -55,24 +51,6 @@ namespace handheld_beta_api.Controllers
                 return StatusCode(500, $"Error interno: {ex.Message}");
             }
         }
-        /*
-    [HttpGet("{nit}")]
-    public async Task<IActionResult> VerificarPermiso(decimal nit)
-    {
-        try
-        {
-            var permiso = await _PTService.GetPermisosTrasladosAsync(nit);
-
-            if (permiso == null)
-                return NotFound(new { mensaje = "No se encontró un permiso para el NIT proporcionado." });
-
-            return Ok(permiso);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Error interno: {ex.Message}");
-        }
-    }*/
     }
 }
 
