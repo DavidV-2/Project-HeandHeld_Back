@@ -19,6 +19,13 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<PermisosTrasladoService>();
+
+builder.Services.AddDbContext<PermisosTrasladoContext>(
+    opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DBConnectionJJVPRGPRODUCCION"))
+);
+
 builder.Services.AddScoped<ObtenerPedidoService>();
 
 builder.Services.AddDbContext<ObtenerPedidoContext>(

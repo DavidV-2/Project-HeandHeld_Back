@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using handheld_beta_api.Services;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Twilio.TwiML.Messaging;
 using System.Text.Json;
 
 namespace handheld_beta_api.Controllers
