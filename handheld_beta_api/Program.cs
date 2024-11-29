@@ -2,14 +2,21 @@ using handheld_beta_api.Model;
 using handheld_beta_api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Configure(builder.Configuration.GetSection("Kestrel"));
+});
+
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins",
+    options.AddPolicy("AllowAll",
         policy =>
         {
             policy.AllowAnyOrigin()
@@ -44,7 +51,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpsRedirection(options =>
 {
-    options.HttpsPort = 5000;
+    options.HttpsPort = 1433;
 });
 
 var app = builder.Build();
@@ -56,7 +63,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowAllOrigins");
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
