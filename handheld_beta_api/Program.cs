@@ -1,19 +1,15 @@
-using handheld_beta_api.Model;
+using handheld_beta_api.Conexion;
 using handheld_beta_api.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Configuración de Kestrel
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.Configure(builder.Configuration.GetSection("Kestrel"));
 });
 
-
+// Configuración de CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -25,38 +21,32 @@ builder.Services.AddCors(options =>
         });
 });
 
+// Agregar controladores
 builder.Services.AddControllers();
 
+// Registrar servicios
+builder.Services.AddScoped<ValidarTiketService>();
 builder.Services.AddScoped<PermisosTrasladoService>();
-
-builder.Services.AddDbContext<PermisosTrasladoContext>(
-    opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DBConnectionJJVPRGPRODUCCION"))
-);
-
 builder.Services.AddScoped<ObtenerPedidoService>();
-
-builder.Services.AddDbContext<ObtenerPedidoContext>(
-    opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DBConnectionJJVPRGPRODUCCION"))
-);
-
 builder.Services.AddScoped<UsuarioService>();
 
-builder.Services.AddDbContext<UsuarioContext>(
-    opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DBConnectionCorsan"))
-);
+// Configurar las conexiones a las bases de datos
+var conexionBD = new ConexionBD(builder.Configuration);
+conexionBD.ConfigurarConexionBD(builder.Services);
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configuración de Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configuración de redirección HTTPS
 builder.Services.AddHttpsRedirection(options =>
 {
-    options.HttpsPort = 1433;
+    options.HttpsPort = 1443; // Asumiendo que el puerto HTTPS es 443
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configuración de la tubería de solicitud HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
