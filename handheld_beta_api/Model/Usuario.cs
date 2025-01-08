@@ -1,4 +1,6 @@
-﻿namespace handheld_beta_api.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace handheld_beta_api.Model
 {
     public class Usuario
     {

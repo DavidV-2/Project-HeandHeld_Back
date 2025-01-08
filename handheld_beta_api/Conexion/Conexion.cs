@@ -1,5 +1,4 @@
 ﻿using handheld_beta_api.Model;
-using handheld_beta_api.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace handheld_beta_api.Conexion
@@ -31,10 +30,27 @@ namespace handheld_beta_api.Conexion
                 opt.UseSqlServer(_configuration.GetConnectionString("DBConnectionJJVPRGPRODUCCION"))
             );
 
-            // Configuración de UsuarioContext
-            services.AddDbContext<UsuarioContext>(opt =>
-                opt.UseSqlServer(_configuration.GetConnectionString("DBConnectionCorsan"))
-            );
+            /* // Configuración de UsuarioContext
+             services.AddDbContext<UsuarioContext>(opt =>
+                 opt.UseSqlServer(_configuration.GetConnectionString("DBConnectionJJVDMSCIERREAGOSTO "))
+             );
+             */
+            // Configuración de UsuarioContext para manejo dinámico
+            services.AddScoped<UsuarioContext>(provider =>
+            {
+                // Obtener el servicio de configuración
+                var config = provider.GetRequiredService<IConfiguration>();
+
+                // Registrar el contexto dinámicamente sin definir cadena fija aquí
+                var optionsBuilder = new DbContextOptionsBuilder<UsuarioContext>();
+
+                // Por defecto, usar una conexión genérica
+                string defaultConnection = config.GetConnectionString("DBConnectionJJVDMSCIERREAGOSTO");
+                optionsBuilder.UseSqlServer(defaultConnection);
+
+                return new UsuarioContext(optionsBuilder.Options);
+            });
+
         }
     }
 
