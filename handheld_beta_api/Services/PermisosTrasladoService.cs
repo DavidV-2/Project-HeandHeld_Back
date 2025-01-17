@@ -8,21 +8,37 @@ namespace handheld_beta_api.Services
 {
     public class PermisosTrasladoService
     {
-        private readonly PermisosTrasladoContext _PTContext;
+        //private readonly PermisosTrasladoContext _PTContext;
+        private readonly IConfiguration _configuration;
 
-        public PermisosTrasladoService(PermisosTrasladoContext context)
+        public PermisosTrasladoService(IConfiguration configuration)
         {
-            _PTContext = context;
+            _configuration = configuration;
         }
 
-        public async Task<PermisosTraslado> GetPermisosTrasladosAsync(int nit)
+        public async Task<PermisosTraslado> GetPermisosTrasladosAsync(int nit, int referencia)
         {
             try
             {
+                string connectionName = referencia switch
+                {
+                    1 => "DBConnectionJJVPRGPRODUCCION",
+                    2 => "DBConnectionPRGPRODUCCION",
+                    _ => throw new ArgumentException("Referencia no válida")
+                };
+
+                string connectionString = _configuration.GetConnectionString(connectionName);
+
+                var optionsBuilder = new DbContextOptionsBuilder<PermisosTrasladoContext>();
+                optionsBuilder.UseSqlServer(connectionString);
+
+                using var context = new PermisosTrasladoContext(optionsBuilder.Options);
+
                 var devnit = new SqlParameter("@nit", SqlDbType.VarChar) { Value = nit };
 
-                var permiso = await _PTContext.PermisosTraslado
-                    .FromSqlRaw("EXEC DVp_Sp_permisos_traslado @nit ", devnit)
+
+                var permiso = await context.PermisosTraslado
+                    .FromSqlRaw("EXEC And_Sp_PermisosTraslado @nit ", devnit)
                     .ToListAsync();
 
                 // Verifica si la lista de permisos está vacía

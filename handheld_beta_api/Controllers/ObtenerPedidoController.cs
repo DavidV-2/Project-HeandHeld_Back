@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using handheld_beta_api.Services;
 using handheld_beta_api.Model;
+using System.Text.Json;
 
 namespace handheld_beta_api.Controllers
 {
@@ -9,21 +10,31 @@ namespace handheld_beta_api.Controllers
     public class ObtenerPedidoController : ControllerBase
     {
         private readonly ObtenerPedidoService _service;
-
+        private readonly Dictionary<int, string> _databases;
         public ObtenerPedidoController(ObtenerPedidoService service)
         {
             _service = service;
+            _databases = new Dictionary<int, string>
+            {
+                { 1, "JJVPRGPRODUCCION" },
+                { 2, "PRGPRODUCCION" }
+            };
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<ObtenerPedido>>> GetObtenerPedidos([FromBody] DevolverRequest body)
+        public async Task<ActionResult<string>> GetObtenerPedidos([FromBody] DevolverRequest body)
         {
             try
             {
-                // Obtener el parámetro 'devolver' del cuerpo
+                if (!_databases.ContainsKey(body.referencia))
+                {
+                    return BadRequest("Referencia inválida.");
+                }
+
+                string database = _databases[body.referencia];
                 string devolver = body.Devolver;
 
-                var pedidos = await _service.GetObtenerPedidosAsync(devolver);
+                var pedidos = await _service.GetObtenerPedidosAsync(devolver,body.referencia);
 
                 if (pedidos == null || pedidos.Count == 0)
                 {
@@ -40,6 +51,7 @@ namespace handheld_beta_api.Controllers
         public class DevolverRequest
         {
             public string Devolver { get; set; }
+            public int referencia { get; set; }
         }
     }
 }
